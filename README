@@ -1,28 +1,46 @@
-Module-Build-Pluggable-AuthorTests
+Module::Build::Pluggable::AuthorTests - Plugin to Module::Build to add author tests
 
-[ REPLACE THIS...
+SYNOPSIS
 
-  The README is used to introduce the module and provide instructions on
-  how to install the module, any machine dependencies it may have (for
-  example C compilers and installed libraries) and any other information
-  that should be understood before the module is installed.
+  # Build.PL
+  use strict;
+  use warnings;
+  use Module::Build::Pluggable qw[ AuthorTests ];
 
-  A README file is required for CPAN modules since CPAN extracts the
-  README file from a module distribution so that people browsing the
-  archive can use it get an idea of the modules uses. It is usually a
-  good idea to provide version information here so that people can
-  decide whether fixes for the module are worth downloading.
-]
+  my $builder = Module::Build::Pluggable->new(
+      ...
+  );
+  $builder->create_build_script();
+
+
+DESCRIPTION
+
+  This Module::Build::Pluggable plugin adds an authortest action
+  which recursively runs tests in both the normal test directory
+  t, as well as in author-only test directories (by default xt ).
+
+  To specify alternate author-only test directories, pass the
+  "test_dirs" option when loading the module, e.g.
+
+    use Module::Build::Pluggable ( AuthorTests =>
+				    { test_dirs => 'xtt' } );
+
+  "test_dirs" will accept either a scalar or an array of directories.
+
+  To run the tests,
+
+    ./Build authortest
+
 
 
 INSTALLATION
 
 To install this module, run the following commands:
 
-	perl Makefile.PL
-	make
-	make test
-	make install
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
 
 
 SUPPORT AND DOCUMENTATION
@@ -32,10 +50,6 @@ perldoc command.
 
     perldoc Module::Build::Pluggable::AuthorTests
 
-
-DEPENDENCIES
-
-None.
 
 COPYRIGHT AND LICENCE
 

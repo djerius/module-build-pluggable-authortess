@@ -5,6 +5,7 @@ requires 'Module::Build::Pluggable';
 on test => sub {
 
    requires 'Test::More';
+   requires 'Test::Module::Build::Pluggable';
 
 };
 

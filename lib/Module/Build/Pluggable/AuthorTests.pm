@@ -7,12 +7,22 @@ use warnings;
 
 our $VERSION = '0.01';
 
+sub HOOK_configure {
+
+    my ( $self ) = shift;
+
+    my @testdirs = (  'ARRAY' eq ref $self->{test_dirs} ?
+		     @{ $self->{test_dirs} } : $self->{test_dirs} );
+
+    $self->builder->test_files( @testdirs );
+
+}
+
 sub HOOK_build {
 
     my $self = shift;
 
     $self->add_action( 'authortest', \&ACTION_authortest );
-
 
 }
 
@@ -23,8 +33,6 @@ sub ACTION_authortest {
     $self->depends_on( 'manifest' );
     $self->depends_on( 'distmeta' );
 
-    $self->test_files( qw< t xt > );
-    $self->recursive_test_files( 1 );
 
     $self->depends_on( 'test' );
 
@@ -50,7 +58,7 @@ version 0.01
     # Build.PL
     use strict;
     use warnings;
-    use Module::Build::Pluggable ('AuthorTests');
+    use Module::Build::Pluggable qw[ AuthorTests ];
 
     my $builder = Module::Build::Pluggable->new(
         ...
@@ -60,9 +68,19 @@ version 0.01
 =head1 DESCRIPTION
 
 This L<Module::Build::Pluggable> plugin adds an B<authortest> action which
-recursively runs tests in the F<t> and F<xt> directories.
+recursively runs tests in both the normal test directory F<t>, as well
+as in author-only test directories (by default F<xt> ).
 
-E.g.,
+To specify alternate author-only test directories, pass the C<test_dirs> option
+when loading the module, e.g.
+
+  use Module::Build::Pluggable ( AuthorTests =>
+                                  { test_dirs => 'xtt' } );
+
+
+C<test_dirs> will accept either a scalar or an array of directories.
+
+To run the tests,
 
   ./Build authortest
 
